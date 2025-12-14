@@ -1,9 +1,14 @@
 ﻿
+using System.Security.Cryptography.X509Certificates;
+using FluentValidation;
+using Mapster;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace SurvayBucketsApi.Controllers;
 
 
 [Route("api/[controller]")]
-[ApiController]
+[ApiController] // responsbile for binding process 
 public class PollsController(IPollservice pollservice) : ControllerBase
 {
    private readonly IPollservice _pollservice = pollservice;
@@ -11,34 +16,38 @@ public class PollsController(IPollservice pollservice) : ControllerBase
     [HttpGet("")]
     public IActionResult Get()
     {
-        return Ok(_pollservice.GetAll());
+        var polls = _pollservice.GetAll();
+        var response = polls.Adapt<IEnumerable<PollResponse>>();
+        return Ok(response);
     }
 
 
     [HttpGet("{id}")]
-    public IActionResult Get(int id )
+    public IActionResult Get( [FromRoute] int id )
     {
         var poll = _pollservice.GetPollById(id) ;
         if(poll is null)
         {
             return NotFound();
         }
-        return Ok(poll);
+       
+        var response = poll.Adapt<PollResponse>();
+        return Ok(response);
     }
 
     [HttpPost("")]
-    public IActionResult Add(Poll request)
+    public IActionResult Add( [FromBody] CrearePollRequest request )
     {
        
-      var newpoll =   _pollservice.AddPoll(request);
+      var newpoll =   _pollservice.AddPoll(request.Adapt<Poll>());
 
         return CreatedAtAction( nameof(Get), new { id = newpoll.id} , newpoll);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int  id , Poll request)
+    public IActionResult Update([FromRoute] int  id , [FromBody] CrearePollRequest request)
     {
-        var updatedPoll = _pollservice.UpdatePoll(id , request);
+        var updatedPoll = _pollservice.UpdatePoll(id , request.Adapt<Poll>());
         if (!updatedPoll)
             return NotFound();
         
@@ -46,7 +55,7 @@ public class PollsController(IPollservice pollservice) : ControllerBase
         return NoContent();
     }
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id) {
+    public IActionResult Delete([FromRoute] int id) {
 
         bool isdeleted =  _pollservice.DeletePoll(id);
 
@@ -56,4 +65,8 @@ public class PollsController(IPollservice pollservice) : ControllerBase
         return NoContent();
 
     }
+
+
+
+
 }

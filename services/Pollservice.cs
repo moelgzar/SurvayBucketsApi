@@ -7,7 +7,8 @@ public class Pollservice : IPollservice
 {
     private readonly static List<Poll> _polls = [
 
-        new Poll { id = 1, Title = "Favorite Programming Language",
+        new Poll { 
+            id = 1, Title = "Favorite Programming Language",
             Description = "Vote for your favorite programming language."  
         } , 
         new Poll {
@@ -15,9 +16,6 @@ public class Pollservice : IPollservice
             Title = "gaazar" ,
             Description = "sdf"
         }
-
-       
-
 
 ];
 
