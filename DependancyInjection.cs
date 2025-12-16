@@ -1,14 +1,26 @@
 ﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using SurvayBucketsApi.Persistence;
 
 namespace SurvayBucketsApi;
 
 public static class DependancyInjection
 {
-  public static  IServiceCollection AddDependancy(this IServiceCollection services)
+  public static  IServiceCollection AddDependancy(this IServiceCollection services , IConfiguration configuration)
     {
 
 
        services.AddControllers();
+
+        //add connection
+
+        var connection = configuration.GetConnectionString("defaultConnection") ??
+            throw new InvalidOperationException("the defult connection not found ");
+
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
+       //--------------------------------
+
+
 
         services.
             AddMappingServices().

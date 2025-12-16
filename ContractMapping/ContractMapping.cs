@@ -1,5 +1,4 @@
-﻿using SurvayBucketsApi.Models;
-
+﻿
 namespace SurvayBucketsApi.ContractMapping;
 
 public static class ContractMapping

@@ -6,5 +6,7 @@ public record PollResponse(
 
      int id,
      string Title,
-     string Description);
-
+    string Summray,
+     bool IsPublished,
+     DateOnly StartsAt,
+     DateOnly EndsAt);

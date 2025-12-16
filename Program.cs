@@ -1,8 +1,11 @@
 
+using Microsoft.EntityFrameworkCore;
+using SurvayBucketsApi.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddDependancy();
+builder.Services.AddDependancy(builder.Configuration);
 
 var app = builder.Build();
 
