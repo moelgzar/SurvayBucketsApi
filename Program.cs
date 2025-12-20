@@ -1,11 +1,16 @@
 
 using Microsoft.EntityFrameworkCore;
+using SurvayBucketsApi.Entites;
 using SurvayBucketsApi.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDependancy(builder.Configuration);
+
+
+//builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
 
@@ -20,6 +25,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+//app.MapIdentityApi<ApplicationUser>();
 app.MapControllers();
 
 app.Run();

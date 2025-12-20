@@ -1,10 +1,9 @@
-﻿
-namespace SurvayBucketsApi.Contracts.Validator;
+﻿namespace SurvayBucketsApi.Contracts.Polls;
 
-public class CreatePollRequestValidator : AbstractValidator<CrearePollRequest>
+public class PollRequestValidator : AbstractValidator<PollRequest>
 {
 
-    public CreatePollRequestValidator()
+    public PollRequestValidator()
     {
         RuleFor(t => t.Title)
             .NotEmpty()
@@ -22,14 +21,14 @@ public class CreatePollRequestValidator : AbstractValidator<CrearePollRequest>
             .NotEmpty();
         RuleFor(e => e)
             .Must(HasValidDate)
-            .WithName(nameof(CrearePollRequest.EndsAt))
+            .WithName(nameof(PollRequest.EndsAt))
             .WithMessage("the End date ({PropertyName}) must greater than start date. ");
             
 
     }
 
 
-    private bool HasValidDate(CrearePollRequest request)
+    private bool HasValidDate(PollRequest request)
     {
         return request.EndsAt >= request.StartsAt;
     }

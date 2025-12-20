@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SurvayBucketsApi.Contracts.Responses;
+namespace SurvayBucketsApi.Contracts.Polls;
 
 public record PollResponse(
 

@@ -2,8 +2,7 @@
 global using Microsoft.AspNetCore.Mvc;
 global using SurvayBucketsApi;
 global using SurvayBucketsApi.services;
-global using SurvayBucketsApi.Contracts.Requests;
-global using SurvayBucketsApi.Contracts.Responses;
+global using SurvayBucketsApi.Contracts.Polls;
 global using SurvayBucketsApi.ContractMapping;
 global using FluentValidation;
 global using Microsoft.EntityFrameworkCore;

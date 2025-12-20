@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SurvayBucketsApi.Contracts.Requests;
+namespace SurvayBucketsApi.Contracts.Polls;
 
-public record CrearePollRequest(
+public record PollRequest(
 string Title , 
      string Summray,
      bool IsPublished,

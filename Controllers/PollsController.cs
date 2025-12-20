@@ -2,7 +2,9 @@
 using System.Security.Cryptography.X509Certificates;
 using FluentValidation;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using SurvayBucketsApi.Contracts.Polls;
 
 namespace SurvayBucketsApi.Controllers;
 
@@ -13,6 +15,7 @@ public class PollsController(IPollservice pollservice) : ControllerBase
 {
    private readonly IPollservice _pollservice = pollservice;
 
+    [Authorize]
     [HttpGet("")]
     public async Task <IActionResult> Get(CancellationToken cancellation = default)
     {
@@ -35,7 +38,7 @@ public class PollsController(IPollservice pollservice) : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task <IActionResult> Add([FromBody] CrearePollRequest request , CancellationToken cancellation = default)
+    public async Task <IActionResult> Add([FromBody] PollRequest request , CancellationToken cancellation = default)
     {
 
         var newpoll = await  _pollservice.AddPollAsync(request.Adapt<Poll>() , cancellation);
@@ -44,7 +47,7 @@ public class PollsController(IPollservice pollservice) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task <IActionResult> Update([FromRoute] int id, [FromBody] CrearePollRequest request , CancellationToken cancellation)
+    public async Task <IActionResult> Update([FromRoute] int id, [FromBody] PollRequest request , CancellationToken cancellation)
     {
         var updatedPoll = await _pollservice.UpdatePollAsync(id, request.Adapt<Poll>() , cancellation);
         if (!updatedPoll)

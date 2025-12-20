@@ -1,9 +1,13 @@
-﻿using System.Reflection;
+﻿using System.Data.Common;
+using System.Reflection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using SurvayBucketsApi.Entites;
 using SurvayBucketsApi.Persistence.EntitesCnfigrations;
 
 namespace SurvayBucketsApi.Persistence;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :
+    IdentityDbContext<ApplicationUser>(options)
 {
    public  DbSet<Poll> polls {  get; set; }
 

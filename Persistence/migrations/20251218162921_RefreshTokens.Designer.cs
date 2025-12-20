@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurvayBucketsApi.Persistence;
 
@@ -11,9 +12,11 @@ using SurvayBucketsApi.Persistence;
 namespace SurvayBucketsApi.Persistence.migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251218162921_RefreshTokens")]
+    partial class RefreshTokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,7 +338,7 @@ namespace SurvayBucketsApi.Persistence.migrations
                             b1.Property<DateTime>("ExpireDate")
                                 .HasColumnType("datetime2");
 
-                            b1.Property<DateTime?>("RevokeOn")
+                            b1.Property<DateTime>("RevokeOn")
                                 .HasColumnType("datetime2");
 
                             b1.Property<string>("Token")
