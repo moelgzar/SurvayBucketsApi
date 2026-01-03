@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Authorization;
 using SurvayBucketsApi.Contracts.Authorization;
+using SurvayBucketsApi.Errors;
 
 namespace SurvayBucketsApi.Controllers;
 [Route("[controller]")]
@@ -15,15 +18,16 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtop
     public JwtOptions _jwtOptions = Jwtoptions.Value;
 
     [HttpPost("")]
-    public async Task<IActionResult> LoginAsync(LoginRequest loginRequest, CancellationToken cancellation)
+    public async Task<IActionResult> LoginAsync(LoginRequestDto loginRequest, CancellationToken cancellation)
     {
 
         var autoresult = await _authService.GetTokenAsync(loginRequest.Email, loginRequest.Password, cancellation);
 
 
-        return autoresult is null ? BadRequest("email or password not correct ") : Ok(autoresult);
+        return autoresult.IsSuccess ? Ok(autoresult.Value) : autoresult.ToProblem();
 
     }
+
     [HttpPut("RefreshToken")]
     public async Task<IActionResult> GenerateRefreshTokenAsync(RefreshTokenRequest Request, CancellationToken cancellation)
     {
@@ -31,7 +35,8 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtop
         var autoresult = await _authService.GetRefreshTokenAsync(Request.Token, cancellation);
 
 
-        return autoresult is null ? BadRequest("Reffresh token  not correct ") : Ok(autoresult);
+        //return autoresult is null ? BadRequest("Reffresh token  not correct ") : Ok(autoresult);
+        return autoresult.IsSuccess ? Ok(autoresult.Value) : NotFound(UserError.UserRefreshTokenNotFound);
 
     }
     [HttpPut("RevokeToken")]

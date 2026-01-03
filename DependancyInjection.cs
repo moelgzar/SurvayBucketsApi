@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SurvayBucketsApi.Authorization;
 using SurvayBucketsApi.Entites;
+using SurvayBucketsApi.Errors;
 using SurvayBucketsApi.Persistence;
 
 namespace SurvayBucketsApi;
@@ -26,17 +27,42 @@ public static class DependancyInjection
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connection));
         //--------------------------------
 
+        // Add Policy.
+
+        //var AllowOrign = configuration.GetSection("AllowOrigns").Get<string[]>();
+
+        services.AddCors(option =>
+
+
+        option.AddDefaultPolicy(
+
+            buillder => buillder
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin()
+
+                ));
+
+
+
+
+
+
+
 
 
         services.
             AddMappingServices().
             AddFluentValidationServices().
             AddSwaggerServices()
-            .AddAuthonticationService(configuration);
+        .AddAuthonticationService(configuration);
 
 
         services.AddScoped<IPollservice, Pollservice>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IQuestionServices, QuestionServices>();
+        services.AddScoped<IVoteServices, VoteServices>();
+        services.AddScoped<IResultService, ResultService>();
 
 
 
@@ -84,21 +110,28 @@ public static class DependancyInjection
 
         return services;
     }
-    public static IServiceCollection AddAuthonticationService(this IServiceCollection services , IConfiguration configuration)
+
+    public static IServiceCollection AddAuthonticationService(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
+
+        //services.AddIdentityApiEndpoints<ApplicationUser>()
+        //  .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
         services.AddSingleton<IJwtProvider, JwtProvider>();
 
-
+        services.AddExceptionHandler<GlobalExceptionHandeling>();
+        services.AddProblemDetails();
 
         //services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
 
         services.AddOptions<JwtOptions>()
             .BindConfiguration(JwtOptions.SectionName)
             .ValidateDataAnnotations();
-            // .validationOnstatrt --> if i wanna buld fail cuz user see excption in production suddenly. so i can use that.
+        // .validationOnstatrt --> if i wanna buld fail cuz user see excption in production suddenly. so i can use that.
 
 
 
@@ -149,11 +182,10 @@ public static class DependancyInjection
 
         });
 
-                return services;
+        return services;
     }
 
 
 }
 
 
-        

@@ -2,7 +2,7 @@
 
 namespace SurvayBucketsApi.Contracts.Authorization;
 
-public class LoginRequesrValidator:AbstractValidator<LoginRequest>
+public class LoginRequesrValidator:AbstractValidator<LoginRequestDto>
 {
 
 

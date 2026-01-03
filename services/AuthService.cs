@@ -1,8 +1,10 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
+using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Authorization;
 using SurvayBucketsApi.Contracts.Authorization;
 using SurvayBucketsApi.Entites;
+using SurvayBucketsApi.Errors;
 
 namespace SurvayBucketsApi.services;
 
@@ -14,18 +16,18 @@ public class AuthService(UserManager<ApplicationUser> userManager , IJwtProvider
 
     private readonly int _RefreshTokenExpiration = 14 ;
 
-    public async Task<AuthResponse> GetTokenAsync(string email, string password, CancellationToken cancellation = default)
+    public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellation = default)
     {
         //check email foud 2- password correct , 3- return token 
 
         var user = await _userManager.FindByEmailAsync(email);
         if (user is null)
-            return null;
+            return Result.Fail<AuthResponse>(UserError.UserCredintial);
 
         var IsValidPassword = await _userManager.CheckPasswordAsync(user, password);
 
         if (!IsValidPassword)
-            return null;
+            return Result.Fail<AuthResponse>(UserError.UserCredintial);
 
         var (token , expirein ) = _JwtProvider.GeneratedToken(user);
 
@@ -43,10 +45,10 @@ public class AuthService(UserManager<ApplicationUser> userManager , IJwtProvider
 
         await _userManager.UpdateAsync(user);
 
+        var response = new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName, token, expirein, RefreshToken, RefreshTokenExpirDate);
 
 
-
-        return new AuthResponse( user.Id, user.Email, user.FirstName, user.LastName, token, expirein , RefreshToken , RefreshTokenExpirDate);
+        return  Result.Success(response);
 
     }
 
@@ -56,22 +58,22 @@ public class AuthService(UserManager<ApplicationUser> userManager , IJwtProvider
         return Convert.ToBase64String (RandomNumberGenerator.GetBytes(64));
     }
 
-    public async Task<AuthResponse> GetRefreshTokenAsync(string token, CancellationToken cancellation = default)
+    public async Task<Result<AuthResponse>> GetRefreshTokenAsync(string token, CancellationToken cancellation = default)
 
     {
 
         var userId = _JwtProvider.ValidateToken(token);
 
         if (userId is null)
-            return null;
+            return Result.Fail<AuthResponse>(UserError.UserCredintial);
 
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
-            return null;
+            return Result.Fail<AuthResponse>(UserError.UserID);
 
         var userrefreeshtoken = user.RefreshTokens.SingleOrDefault(t => t.Token == token && t.IsActive());
         if (userrefreeshtoken is null)
-            return null;
+            return Result.Fail<AuthResponse>(UserError.UserRefreshTokenNotFound);
 
         var (newtoken, expirein) = _JwtProvider.GeneratedToken(user);
 
@@ -90,8 +92,9 @@ public class AuthService(UserManager<ApplicationUser> userManager , IJwtProvider
         await _userManager.UpdateAsync(user);
 
 
+        var response = new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName, newtoken, expirein, newRefreshToken, RefreshTokenExpirDate);
 
-        return new AuthResponse(user.Id, user.Email, user.FirstName, user.LastName, newtoken, expirein, newRefreshToken, RefreshTokenExpirDate);
+        return Result.Success(response);
 
 
     }

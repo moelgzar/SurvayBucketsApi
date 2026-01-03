@@ -4,9 +4,9 @@ namespace SurvayBucketsApi.Contracts.Polls;
 
 public record PollResponse(
 
-     int id,
+     int Id,
      string Title,
-    string Summray,
+     string Summray,
      bool IsPublished,
      DateOnly StartsAt,
      DateOnly EndsAt);

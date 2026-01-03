@@ -1,6 +1,7 @@
-﻿namespace SurvayBucketsApi.Contracts.Authorization;
+﻿
+namespace SurvayBucketsApi.Contracts.Authorization;
 
-public record LoginRequest(
+public record LoginRequestDto(
     string Email,
     string Password
 

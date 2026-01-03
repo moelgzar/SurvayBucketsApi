@@ -15,7 +15,7 @@ public class PollRequestValidator : AbstractValidator<PollRequest>
 
         RuleFor(s => s.StartsAt)
             .NotEmpty()
-            .GreaterThanOrEqualTo(DateOnly.FromDateTime(DateTime.Today));
+            .LessThanOrEqualTo(DateOnly.FromDateTime(DateTime.Today));
 
         RuleFor(e => e.EndsAt)
             .NotEmpty();

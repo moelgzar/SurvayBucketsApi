@@ -13,4 +13,8 @@ public class PollConfigration : IEntityTypeConfiguration<Poll>
 
        
     }
+
+
+    
+
 }
