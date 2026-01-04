@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Contracts.Vote;
 using SurvayBucketsApi.Errors;
@@ -10,26 +11,24 @@ using SurvayBucketsApi.Extensions;
 namespace SurvayBucketsApi.Controllers;
 [Route("api/polls/{pollId}/vote")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class VotesController(IQuestionServices questionServices , IVoteServices voteServices) : ControllerBase
 {
     private readonly IQuestionServices _questionServices = questionServices;
     private readonly IVoteServices _voteServices = voteServices;
 
     [HttpGet("")]
+    [OutputCache(Duration =60)]
     public async Task<IActionResult> Start([FromRoute] int pollid, CancellationToken cancellationToken)
     {
        
-        var userid = User.GetUserId();
+        var userid = "56026f6f-421c-496f-9a21-fb0df73b6123";
 
         var result = await _questionServices.GetAvilabelAsync(pollid, userid, cancellationToken);
 
-        if(result.IsSuccess)
-           return Ok(result.Value);
         
-        return result.Error.Equals(VoteError.UserAlreadyVoted) 
-            ? result.ToProblem() : 
-            result.ToProblem()  ;
+        return result.IsSuccess ? Ok(result.Value) : 
+                     result.ToProblem()  ;
 
     }
 

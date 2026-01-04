@@ -11,16 +11,17 @@ namespace SurvayBucketsApi.Controllers;
 [Route("[controller]")]
 [ApiController]
 
-public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtoptions) : ControllerBase
+public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtoptions , ILogger<AuthController> logger) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
-
+    private readonly ILogger<AuthController> _logger = logger;
     public JwtOptions _jwtOptions = Jwtoptions.Value;
 
     [HttpPost("")]
     public async Task<IActionResult> LoginAsync(LoginRequestDto loginRequest, CancellationToken cancellation)
     {
 
+        _logger.LogWarning("Login attempt for hellow ");
         var autoresult = await _authService.GetTokenAsync(loginRequest.Email, loginRequest.Password, cancellation);
 
 

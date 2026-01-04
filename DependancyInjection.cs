@@ -63,6 +63,7 @@ public static class DependancyInjection
         services.AddScoped<IQuestionServices, QuestionServices>();
         services.AddScoped<IVoteServices, VoteServices>();
         services.AddScoped<IResultService, ResultService>();
+        services.AddScoped<ICashService, CashService>();
 
 
 
