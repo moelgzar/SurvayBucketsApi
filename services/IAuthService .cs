@@ -1,5 +1,6 @@
 ﻿using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Contracts.Authorization;
+using SurvayBucketsApi.Contracts.Register;
 
 namespace SurvayBucketsApi.services;
 
@@ -10,5 +11,7 @@ public interface IAuthService
 
     Task<bool> RevokeRefreshTokenAsync(string token , string refreshToken, CancellationToken cancellation = default);
 
-
+    Task<Result> RegisterAsync(RegisterRequestShape request, CancellationToken cancellation = default);
+    Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request);
+    Task<Result> ResendConfirmEmailAsync(ResendConfirmEmail request);
 }

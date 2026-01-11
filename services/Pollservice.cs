@@ -1,13 +1,15 @@
 ﻿
+using Hangfire;
 using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Errors;
 
 namespace SurvayBucketsApi.services;
 
-public class Pollservice(ApplicationDbContext context) : IPollservice
+public class Pollservice(ApplicationDbContext context , INotificationService notificationService) : IPollservice
 
 {
     private readonly ApplicationDbContext _context = context;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellation = default)
     {
@@ -88,12 +90,15 @@ public class Pollservice(ApplicationDbContext context) : IPollservice
 
     public async Task<Result> togglePublishStatus(int id, CancellationToken cancellation)
     {
-        var currentpoll = await GetAsync(id, cancellation);
-        if (currentpoll is null)
+        var poll = await _context.polls.FirstOrDefaultAsync(x=>x.Id == id);
+        if (poll is null)
             return Result.Fail(PollError.PollNotFound);
 
         await _context.SaveChangesAsync(cancellation);
 
+        if (poll.IsPublished && poll.StartsAt == DateOnly.FromDateTime(DateTime.UtcNow))
+
+            BackgroundJob.Enqueue( () => _notificationService.SendNewPollsNotifications(poll.Id));
         return Result.Success();
     }
 

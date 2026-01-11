@@ -1,17 +1,15 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Authorization;
 using SurvayBucketsApi.Contracts.Authorization;
+using SurvayBucketsApi.Contracts.Register;
 using SurvayBucketsApi.Errors;
 
 namespace SurvayBucketsApi.Controllers;
 [Route("[controller]")]
 [ApiController]
 
-public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtoptions , ILogger<AuthController> logger) : ControllerBase
+public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtoptions, ILogger<AuthController> logger) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
     private readonly ILogger<AuthController> _logger = logger;
@@ -51,24 +49,37 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtop
 
     }
 
-    //[HttpGet]
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterRequestShape Request, CancellationToken cancellation)
+    {
 
-    //public IActionResult Test() {
+        var result = await _authService.RegisterAsync(Request, cancellation);
 
 
-    //    var config = new
-    
-    //    {
-    //        mykey = _jwtOptions.Key,
+        return result.IsSuccess ? Ok() : result.ToProblem();
 
-    //        Audiance = _jwtOptions.Audiance,
+    }
 
-    //        Issuer = _jwtOptions.Issuer,
+    [HttpPost("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest Request)
+    {
 
-    //    };
+        var result = await _authService.ConfirmEmailAsync(Request);
 
-    //    return Ok(config);
 
-    //}
+        return result.IsSuccess ? Ok() : result.ToProblem();
+
+    }
+
+    [HttpPost("resend-confirm-email")]
+    public async Task<IActionResult> ResendConfirmEmail([FromBody] ResendConfirmEmail Request)
+    {
+
+        var result = await _authService.ResendConfirmEmailAsync(Request);
+
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
+
+    }
 
 }

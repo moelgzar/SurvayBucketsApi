@@ -1,13 +1,14 @@
 ﻿using System.Reflection;
 using System.Text;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.IdentityModel.Tokens;
 using SurvayBucketsApi.Authorization;
 using SurvayBucketsApi.Entites;
 using SurvayBucketsApi.Errors;
-using SurvayBucketsApi.Persistence;
+using SurvayBucketsApi.Settings;
 
 namespace SurvayBucketsApi;
 
@@ -44,7 +45,8 @@ public static class DependancyInjection
                 ));
 
 
-
+        // Add Hybrid Cache services
+        services.AddHybridCache();
 
 
 
@@ -54,8 +56,9 @@ public static class DependancyInjection
         services.
             AddMappingServices().
             AddFluentValidationServices().
-            AddSwaggerServices()
-        .AddAuthonticationService(configuration);
+            AddSwaggerServices().
+            AddAuthonticationService(configuration)
+           .AddBackgroundJobsServices(configuration);
 
 
         services.AddScoped<IPollservice, Pollservice>();
@@ -63,7 +66,10 @@ public static class DependancyInjection
         services.AddScoped<IQuestionServices, QuestionServices>();
         services.AddScoped<IVoteServices, VoteServices>();
         services.AddScoped<IResultService, ResultService>();
-        services.AddScoped<ICashService, CashService>();
+        services.AddScoped<INotificationService , NotificationService>();
+        //services.AddScoped<EmailService>();
+        services.AddScoped<IEmailSender, EmailService>();
+        //services.AddScoped<ICashService, CashService>();
 
 
 
@@ -115,8 +121,11 @@ public static class DependancyInjection
     public static IServiceCollection AddAuthonticationService(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+            
 
+        services.AddHttpContextAccessor();
 
         //services.AddIdentityApiEndpoints<ApplicationUser>()
         //  .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -135,6 +144,9 @@ public static class DependancyInjection
         // .validationOnstatrt --> if i wanna buld fail cuz user see excption in production suddenly. so i can use that.
 
 
+
+
+        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
 
 
         var JwtSetting = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
@@ -180,12 +192,32 @@ public static class DependancyInjection
 
             };
 
+        });
+
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequiredLength = 8;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
 
         });
 
         return services;
     }
+    public static IServiceCollection AddBackgroundJobsServices(this IServiceCollection services , IConfiguration configuration)
+    {
 
+        services.AddHangfire(config => config
+       .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+       .UseSimpleAssemblyNameTypeSerializer()
+       .UseRecommendedSerializerSettings()
+       .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+        // Add the processing server as IHostedService
+        services.AddHangfireServer();
+
+        return services;
+    }
 
 }
 
