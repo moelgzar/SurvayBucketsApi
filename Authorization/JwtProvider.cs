@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SurvayBucketsApi.Entites;
@@ -13,7 +14,7 @@ public class JwtProvider(IOptions<JwtOptions> options ) : IJwtProvider
 
 
 
-    public (string token, int ExperiesIn) GeneratedToken(ApplicationUser user)
+    public (string token, int ExperiesIn) GeneratedToken(ApplicationUser user , IEnumerable<string> roles , IEnumerable<string> permissions) 
     {
         Claim[] claims = [
 
@@ -22,6 +23,9 @@ public class JwtProvider(IOptions<JwtOptions> options ) : IJwtProvider
          new (JwtRegisteredClaimNames.GivenName , user.FirstName),
          new (JwtRegisteredClaimNames .FamilyName , user.LastName),
          new (JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
+         new (nameof(roles) , JsonSerializer.Serialize(roles) , JsonClaimValueTypes.JsonArray),
+         new (nameof(permissions) ,JsonSerializer.Serialize(permissions) , JsonClaimValueTypes.JsonArray)
+
 
          ];
 

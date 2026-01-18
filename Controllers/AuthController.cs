@@ -81,5 +81,24 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtop
         return result.IsSuccess ? Ok() : result.ToProblem();
 
     }
+    [HttpPost("forget-password")]
+    public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordRequest Request)
+    {
 
+        var result = await _authService.SendResetPasswordCodeAsync(Request);
+
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
+
+    }
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+    {
+
+        var result = await _authService.ResetPasswordAsync(request);
+
+
+        return result.IsSuccess ? Ok() : result.ToProblem();
+
+    }
 }

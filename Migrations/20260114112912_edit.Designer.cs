@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurvayBucketsApi.Persistence;
 
@@ -11,9 +12,11 @@ using SurvayBucketsApi.Persistence;
 namespace SurvayBucketsApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260114112912_edit")]
+    partial class edit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -396,9 +399,6 @@ namespace SurvayBucketsApi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsDisabled")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -458,12 +458,11 @@ namespace SurvayBucketsApi.Migrations
                             Email = "Admin@email.com",
                             EmailConfirmed = true,
                             FirstName = "Survey Basket",
-                            IsDisabled = false,
                             LastName = "Admin",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EMAIL.COM",
                             NormalizedUserName = "ADMIN@EMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDglRUxq8XrzSwgYxb0JDLkyITJ4PopH5bQgVDkmmNcm2zPXjs1DstIolHGAAq7nSQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOcltPhVR5VGRarMpWeeutri+hx+xoUD8Q0F0PI8Iy0CTk2yxTECXHB05uTIIx6WAw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "efc11bfa1c1e4100a8e7ece811066671",
                             TwoFactorEnabled = false,

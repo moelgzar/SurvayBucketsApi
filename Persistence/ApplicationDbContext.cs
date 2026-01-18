@@ -9,7 +9,7 @@ using SurvayBucketsApi.Persistence.EntitesCnfigrations;
 namespace SurvayBucketsApi.Persistence;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options , IHttpContextAccessor httpContextAccessor) :
-    IdentityDbContext<ApplicationUser>(options)
+    IdentityDbContext<ApplicationUser , ApplicationRole  ,string>(options)
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
@@ -33,6 +33,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             fk.DeleteBehavior = DeleteBehavior.Restrict;
 
 
+        
 
         base.OnModelCreating(modelBuilder);
     }

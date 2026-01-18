@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurvayBucketsApi.Persistence;
 
@@ -11,9 +12,11 @@ using SurvayBucketsApi.Persistence;
 namespace SurvayBucketsApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260113150433_addstest")]
+    partial class addstest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,98 +53,98 @@ namespace SurvayBucketsApi.Migrations
                         new
                         {
                             Id = 1,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "poll:read",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 2,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "poll:add",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 3,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "poll:update",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 4,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "poll:delete",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 5,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "question:read",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 6,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "question:add",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 7,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "question:update",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 8,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "user:read",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 9,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "user:add",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 10,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "user:update",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 11,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "role:read",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 12,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "role:add",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 13,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "role:update",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         },
                         new
                         {
                             Id = 14,
-                            ClaimType = "permissions",
+                            ClaimType = "Permessions",
                             ClaimValue = "result:read",
                             RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
                         });
@@ -396,9 +399,6 @@ namespace SurvayBucketsApi.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsDisabled")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -458,12 +458,11 @@ namespace SurvayBucketsApi.Migrations
                             Email = "Admin@email.com",
                             EmailConfirmed = true,
                             FirstName = "Survey Basket",
-                            IsDisabled = false,
                             LastName = "Admin",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EMAIL.COM",
                             NormalizedUserName = "ADMIN@EMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDglRUxq8XrzSwgYxb0JDLkyITJ4PopH5bQgVDkmmNcm2zPXjs1DstIolHGAAq7nSQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGaGoarjWXzEJsT2ft6ZAJzOZTy1p0+jSJDvNOe9/A4Tsrg7DyWg6cxIwlcRDerIfg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "efc11bfa1c1e4100a8e7ece811066671",
                             TwoFactorEnabled = false,

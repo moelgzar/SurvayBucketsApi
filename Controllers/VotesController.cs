@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using SurvayBucketsApi.Abstractions;
+using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Contracts.Vote;
 using SurvayBucketsApi.Errors;
 using SurvayBucketsApi.Extensions;
@@ -11,7 +12,7 @@ using SurvayBucketsApi.Extensions;
 namespace SurvayBucketsApi.Controllers;
 [Route("api/polls/{pollId}/vote")]
 [ApiController]
-//[Authorize]
+[Authorize(Roles = DefaultRole.Member)]
 public class VotesController(IQuestionServices questionServices , IVoteServices voteServices) : ControllerBase
 {
     private readonly IQuestionServices _questionServices = questionServices;

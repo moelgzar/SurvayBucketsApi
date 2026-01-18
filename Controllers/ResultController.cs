@@ -1,10 +1,12 @@
 ﻿
 using SurvayBucketsApi.Abstractions;
+using SurvayBucketsApi.Abstractions.Const;
+using SurvayBucketsApi.Authorization.Filter;
 
 namespace SurvayBucketsApi.Controllers;
 [Route("api/polls/{pollid}/[controller]")]
 [ApiController]
-[Authorize]
+[HasPermission(Permissions.Results)]
 public class ResultsController(IResultService resultService) : ControllerBase
 {
     private readonly IResultService _resultService = resultService;

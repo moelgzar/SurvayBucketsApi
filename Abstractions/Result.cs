@@ -29,7 +29,8 @@ public class  Result<Tvalue> : Result
 {
     private readonly Tvalue _value;
 
-    public Result(Tvalue value , bool isSuccess, Error error) : base(isSuccess , error)
+    public 
+        Result(Tvalue value , bool isSuccess, Error error) : base(isSuccess , error)
     {
         _value = value;
     }

@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using SurvayBucketsApi.Contracts.Question;
 using SurvayBucketsApi.Contracts.Register;
+using SurvayBucketsApi.Contracts.User;
 using SurvayBucketsApi.Entites;
 
 namespace SurvayBucketsApi.Mapping;
@@ -18,5 +19,20 @@ public class MappingConfigrations : IRegister
 
         config.NewConfig<RegisterRequestShape , ApplicationUser>()
             .Map(dest => dest.UserName, src => src.Email);
+
+
+        config.NewConfig<(ApplicationUser user, IList<string> roles), UserResponse>()
+           .Map(dest => dest, src => src.user)
+           .Map(dest => dest.Roles, src => src.roles);
+
+        config.NewConfig<CreateUserRequest, ApplicationUser>()
+          .Map(dest => dest.UserName, src => src.Email)
+          .Map(dest=>dest.EmailConfirmed , src=> true);
+
+        config.NewConfig<UpdateUserRequest, ApplicationUser>()
+           .Map(dest => dest.UserName, src => src.Email)
+           .Map(dest => dest.NormalizedUserName, src => src.Email.ToUpper());
+
+
     }
 }

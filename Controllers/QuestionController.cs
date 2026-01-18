@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SurvayBucketsApi.Abstractions;
+using SurvayBucketsApi.Abstractions.Const;
+using SurvayBucketsApi.Authorization.Filter;
 using SurvayBucketsApi.Contracts.Question;
 using SurvayBucketsApi.Errors;
 
@@ -15,6 +17,7 @@ public class QuestionController(IQuestionServices questionServices) : Controller
 
 
     [HttpGet("")]
+    [HasPermission(Permissions.GetQuestion)]
     public async Task <IActionResult> GetAll([FromRoute] int pollId,  [FromBody] QuestionRequest request, CancellationToken cancellationToken)
     {
         var result =  await _questionServices.GetAllAsync(pollId, CancellationToken.None);
@@ -26,6 +29,7 @@ public class QuestionController(IQuestionServices questionServices) : Controller
 
 
     [HttpGet("{id}")]
+    [HasPermission(Permissions.GetQuestion)]
     public async Task < IActionResult> Get([FromRoute] int pollId, [FromRoute] int id   , CancellationToken cancellationToken)
     {
         var result = await _questionServices.GetAsync(pollId,id , cancellationToken);
@@ -36,6 +40,8 @@ public class QuestionController(IQuestionServices questionServices) : Controller
 
 
     [HttpPost("")]
+    [HasPermission(Permissions.AddQuestion)]
+
     public async Task<IActionResult> AddAsync( [FromRoute] int pollId, [FromBody] QuestionRequest request, CancellationToken cancellationToken)
     {
         var result = await _questionServices.AddAsync(pollId, request, cancellationToken);
@@ -47,7 +53,7 @@ public class QuestionController(IQuestionServices questionServices) : Controller
 
     }
     [HttpPut("{id}/toggle-status")]
-
+    [HasPermission(Permissions.UpdateQuestion)]
     public async Task<IActionResult> ToggleStatusAsync([FromRoute] int pollId, [FromRoute] int id, CancellationToken cancellationToken)
     {
         var result = await _questionServices.ToggleStatus(pollId, id, cancellationToken);
@@ -57,6 +63,8 @@ public class QuestionController(IQuestionServices questionServices) : Controller
     }
 
     [HttpPut("{id}")]
+    [HasPermission(Permissions.UpdateQuestion)]
+
     public async Task<IActionResult> UpdateAsync([FromRoute] int pollId, [FromRoute] int id, [FromBody] QuestionRequest request, CancellationToken cancellationToken)
     {
         var result = await _questionServices.UpdateAsync(pollId, id, request, cancellationToken);

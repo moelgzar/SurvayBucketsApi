@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.IdentityModel.Tokens;
 using SurvayBucketsApi.Authorization;
+using SurvayBucketsApi.Authorization.Filter;
 using SurvayBucketsApi.Entites;
 using SurvayBucketsApi.Errors;
 using SurvayBucketsApi.Settings;
@@ -67,6 +68,8 @@ public static class DependancyInjection
         services.AddScoped<IVoteServices, VoteServices>();
         services.AddScoped<IResultService, ResultService>();
         services.AddScoped<INotificationService , NotificationService>();
+        services.AddScoped<IUserService , UserService>();
+        services.AddScoped<IRoleService, RoleService>();
         //services.AddScoped<EmailService>();
         services.AddScoped<IEmailSender, EmailService>();
         //services.AddScoped<ICashService, CashService>();
@@ -120,7 +123,7 @@ public static class DependancyInjection
 
     public static IServiceCollection AddAuthonticationService(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, ApplicationRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
             
@@ -131,7 +134,10 @@ public static class DependancyInjection
         //  .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
+        services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
         services.AddSingleton<IJwtProvider, JwtProvider>();
+
 
         services.AddExceptionHandler<GlobalExceptionHandeling>();
         services.AddProblemDetails();

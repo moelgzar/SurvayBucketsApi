@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using SurvayBucketsApi.Abstractions;
+using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Authorization;
 using SurvayBucketsApi.Contracts.Authorization;
 using SurvayBucketsApi.Contracts.Register;
@@ -17,7 +18,7 @@ namespace SurvayBucketsApi.services;
 
 public class AuthService(UserManager<ApplicationUser> userManager , SignInManager<ApplicationUser> signInManager ,
     IJwtProvider jwtProvider , ILogger<ApplicationUser> logger , IHttpContextAccessor httpContextAccessor , 
-    IEmailSender emailSender) : IAuthService
+    IEmailSender emailSender , ApplicationDbContext context) : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
@@ -25,6 +26,7 @@ public class AuthService(UserManager<ApplicationUser> userManager , SignInManage
     private readonly ILogger _logger = logger;
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly IEmailSender _emailSender = emailSender;
+    private readonly ApplicationDbContext _context = context;
     private readonly int _RefreshTokenExpiration = 14 ;
 
     public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellation = default)
@@ -35,13 +37,23 @@ public class AuthService(UserManager<ApplicationUser> userManager , SignInManage
         if (user is null)
             return Result.Fail<AuthResponse>(UserError.UserCredintial);
 
-       
-        var result = await _signInManager.PasswordSignInAsync(user, password, false , false) ;
+        if(user.IsDisabled)
+            return Result.Fail<AuthResponse>(UserError.UserDisabled);
+
+
+
+        //Select roles 
+
+
+        var (UserRoles , UserPermission) = await GetRoleAndPermission(user , cancellation);
+
+
+        var result = await _signInManager.PasswordSignInAsync(user, password, false , true) ;
 
         if(result.Succeeded)
         {
 
-            var (token, expirein) = _JwtProvider.GeneratedToken(user);
+            var (token, expirein) = _JwtProvider.GeneratedToken(user , UserRoles, UserPermission);
 
             var RefreshToken = GenerateRefreshToken();
 
@@ -62,10 +74,12 @@ public class AuthService(UserManager<ApplicationUser> userManager , SignInManage
 
             return Result.Success(response);
 
-
         }
 
-        return Result.Fail<AuthResponse>(result.IsNotAllowed ? UserError.EmailNotConfirmed : UserError.UserCredintial);
+        var error = result.IsNotAllowed ? UserError.EmailNotConfirmed : result.IsLockedOut ? UserError.LockedUser : UserError.UserCredintial;
+
+
+        return Result.Fail<AuthResponse>(error);
 
 
     }
@@ -90,11 +104,16 @@ public class AuthService(UserManager<ApplicationUser> userManager , SignInManage
         if (user is null)
             return Result.Fail<AuthResponse>(UserError.UserID);
 
+
+        if (user.IsDisabled)
+            return Result.Fail<AuthResponse>(UserError.UserDisabled);
+
         var userrefreeshtoken = user.RefreshTokens.SingleOrDefault(t => t.Token == token && t.IsActive());
         if (userrefreeshtoken is null)
             return Result.Fail<AuthResponse>(UserError.UserRefreshTokenNotFound);
 
-        var (newtoken, expirein) = _JwtProvider.GeneratedToken(user);
+        var claims = GetRoleAndPermission(user,cancellation);
+        var (newtoken, expirein) = _JwtProvider.GeneratedToken(user , claims.Result.roles , claims.Result.permission);
 
         var newRefreshToken = GenerateRefreshToken();
 
@@ -196,13 +215,16 @@ public class AuthService(UserManager<ApplicationUser> userManager , SignInManage
 
         }
         catch (FormatException) {
-            return Result.Fail(UserError.Code);
+            return Result.Fail(UserError.invalidCode);
         }
 
       var result =   await _userManager.ConfirmEmailAsync(user, code);
         
         if (result.Succeeded)
+        {
+           await _userManager.AddToRoleAsync(user, DefaultRole.Member);
             return Result.Success();
+        }
         var error = result.Errors.First();
         return Result.Fail<AuthResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
 
@@ -230,6 +252,61 @@ public class AuthService(UserManager<ApplicationUser> userManager , SignInManage
 
      
     }
+
+    public async Task<Result> SendResetPasswordCodeAsync(ForgetPasswordRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user is null)
+            return Result.Success();
+
+      
+
+        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        _logger.LogInformation("Email confirmation code for user: {Code} ", code);
+
+        await SendResetPasswordEmail(user, code);
+
+        return Result.Success();
+
+
+    }
+
+
+    public async Task<Result> ResetPasswordAsync(ResetPasswordRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user is null || !user.EmailConfirmed)
+            return Result.Fail(UserError.invalidCode);
+
+        IdentityResult result;
+
+        try
+        {
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+             result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
+        } 
+        catch(FormatException) 
+        {
+            result = IdentityResult.Failed(_userManager.ErrorDescriber.InvalidToken());
+        }
+
+        if(result.Succeeded)
+              return Result.Success();  
+
+
+        var error = result.Errors.First();
+
+        return Result.Fail(new Error (error.Code , error.Description , StatusCodes.Status400BadRequest));
+    }
+
+
+
+
+
     private async Task SendConfirmationEmail(ApplicationUser user , string code )
     {
         var orign = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
@@ -244,5 +321,45 @@ public class AuthService(UserManager<ApplicationUser> userManager , SignInManage
         BackgroundJob.Enqueue( ()=> _emailSender.SendEmailAsync(user.Email!, "Confirm your email", emailbody));
        await Task.CompletedTask;
 
+    }
+    private async Task SendResetPasswordEmail(ApplicationUser user, string code)
+    {
+        var orign = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+
+        var emailbody = EmailBodyBuilder.GenerateEmailBody("ConfirmEmail", new Dictionary<string, string>
+             {
+                 { "{{name}}" , user.FirstName },
+
+                 { "{{action_url}}" ,  $"{ orign}/auth/changepassword?useremail={user.Email}&code={code}" }
+             });
+
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "🔐 Change Password ", emailbody));
+        await Task.CompletedTask;
+
+    }
+
+    private async Task <(IEnumerable<string> roles , IEnumerable<string> permission)> GetRoleAndPermission(ApplicationUser user 
+        , CancellationToken cancellationToken)
+    {
+
+        var UserRoles = await _userManager.GetRolesAsync(user);
+
+        //var UserPermission = await _context.Roles.
+        //             Join(_context.RoleClaims, role => role.Id, claims => claims.RoleId, (role, claims) => new { role, claims })
+        //             .Where(x => UserRoles.Contains(x.role.Name!))
+        //             .Select(x => x.claims.ClaimValue)
+        //            .Distinct()
+        //            .ToListAsync(cancellationToken);
+
+
+        var UserPermission = await (from r in _context.Roles
+                             join p in _context.RoleClaims on r.Id equals p.RoleId
+                             where UserRoles.Contains(r.Name!)
+                             select p.ClaimValue).
+                             Distinct().
+                             ToListAsync(cancellationToken);
+
+
+        return (UserRoles ,  UserPermission);
     }
 }
