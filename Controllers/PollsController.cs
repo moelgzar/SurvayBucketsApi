@@ -1,4 +1,5 @@
 ﻿
+using Asp.Versioning;
 using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Authorization.Filter;
@@ -6,6 +7,8 @@ using SurvayBucketsApi.Errors;
 
 namespace SurvayBucketsApi.Controllers;
 
+[ApiVersion(1)]
+[ApiVersion(2)]
 
 [Route("api/[controller]")]
 [ApiController] // responsbile for binding process
@@ -21,16 +24,25 @@ public class PollsController(IPollservice pollservice) : ControllerBase
         return Ok(await _pollservice.GetAllAsync(cancellation));
     }
 
-
+    [MapToApiVersion(1)]
     [HttpGet("current")]
-    [Authorize(Roles = DefaultRole.Member)]
-    [HasPermission(Permissions.GetPoll)]
+    //[Authorize(Roles = DefaultRole.Member)]
+    //[HasPermission(Permissions.GetPoll)]
 
-    public async Task<IActionResult> GetCurrent(CancellationToken cancellation = default)
+    public async Task<IActionResult> GetCurrentV1(CancellationToken cancellation = default)
     {
         return Ok(await _pollservice.GetCurrentAsync(cancellation));
     }
 
+    [MapToApiVersion(2)]
+    [HttpGet("current")]
+    //[Authorize(Roles = DefaultRole.Member)]
+    //[HasPermission(Permissions.GetPoll)]
+
+    public async Task<IActionResult> GetCurrentV2(CancellationToken cancellation = default)
+    {
+        return Ok(await _pollservice.GetCurrentAsyncV2(cancellation));
+    }
 
 
     [HttpGet("{id}")]

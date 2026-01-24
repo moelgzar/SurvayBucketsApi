@@ -9,4 +9,14 @@ public record PollResponse(
      string Summray,
      bool IsPublished,
      DateOnly StartsAt,
-     DateOnly EndsAt);
+     DateOnly EndsAt
+    );
+
+public record PollResponseV2(
+
+     int Id,
+     string Title,
+     string Summray,
+     DateOnly StartsAt,
+     DateOnly EndsAt
+    );

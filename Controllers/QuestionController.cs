@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Authorization.Filter;
+using SurvayBucketsApi.Contracts.Common;
 using SurvayBucketsApi.Contracts.Question;
 using SurvayBucketsApi.Errors;
 
@@ -18,9 +19,9 @@ public class QuestionController(IQuestionServices questionServices) : Controller
 
     [HttpGet("")]
     [HasPermission(Permissions.GetQuestion)]
-    public async Task <IActionResult> GetAll([FromRoute] int pollId,  [FromBody] QuestionRequest request, CancellationToken cancellationToken)
+    public async Task <IActionResult> GetAll([FromRoute] int pollId, [FromQuery] RequestFilter filter, CancellationToken cancellationToken)
     {
-        var result =  await _questionServices.GetAllAsync(pollId, CancellationToken.None);
+        var result =  await _questionServices.GetAllAsync(pollId, filter, cancellationToken);
 
         return result.IsSuccess ? Ok( result.Value) : result.ToProblem();
     }

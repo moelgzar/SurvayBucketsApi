@@ -1,13 +1,10 @@
 
 using Hangfire;
 using HangfireBasicAuthenticationFilter;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
-using SurvayBucketsApi.Authorization;
-using SurvayBucketsApi.Entites;
-using SurvayBucketsApi.Errors;
-using SurvayBucketsApi.Persistence;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,16 +15,31 @@ builder.Host.UseSerilog(( (context , config) => config
     .ReadFrom.Configuration(context.Configuration)
     ));
 
+
 var app = builder.Build();
 
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+
+        app.UseSwaggerUI( options => 
+        {
+            var descriptions = app.DescribeApiVersions();
+               foreach (var description in descriptions)
+               {
+                   options.SwaggerEndpoint(
+                       $"/swagger/{description.GroupName}/swagger.json",
+                       description.GroupName.ToUpperInvariant()
+                   );
+            }
+        });
+    }
+
+
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
@@ -57,6 +69,8 @@ var notificationservice = scope.ServiceProvider.GetRequiredService<INotification
 
 RecurringJob.AddOrUpdate("SendNewPollsNotifications", () => notificationservice.SendNewPollsNotifications(null) , Cron.Daily);
 
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors();
 app.UseAuthorization();
@@ -64,4 +78,10 @@ app.UseAuthorization();
 //app.MapIdentityApi<ApplicationUser>();
 app.MapControllers();
 app.UseExceptionHandler();
+app.UseRateLimiter();
+app.MapHealthChecks("health" , new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    
+});
 app.Run();

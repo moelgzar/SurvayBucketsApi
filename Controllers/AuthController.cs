@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Authorization;
 using SurvayBucketsApi.Contracts.Authorization;
@@ -99,6 +100,16 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtop
 
 
         return result.IsSuccess ? Ok() : result.ToProblem();
+
+    }
+
+    [HttpGet("test")]
+    [EnableRateLimiting("sliding")]
+    public  IActionResult Test()
+    {
+        Thread.Sleep(6000);
+
+        return Ok();
 
     }
 }

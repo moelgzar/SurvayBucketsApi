@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.Caching.Memory;
+using System.Linq.Dynamic.Core;
 using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Contracts.Answers;
+using SurvayBucketsApi.Contracts.Common;
 using SurvayBucketsApi.Contracts.Question;
 using SurvayBucketsApi.Entites;
 using SurvayBucketsApi.Errors;
@@ -46,40 +47,35 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
 
     }
 
-    public async Task<Result<IEnumerable<QuestionResponse>>> GetAllAsync(int pollId, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<QuestionResponse>>> GetAllAsync(int pollId, RequestFilter filter ,  CancellationToken cancellationToken)
     {
       
       var   PollIsExist =  await _context.polls.AnyAsync(p => p.Id == pollId, cancellationToken);
 
         if (!PollIsExist)
-            return Result.Fail<IEnumerable<QuestionResponse>>(PollError.PollNotFound);
+            return Result.Fail<PaginatedList<QuestionResponse>>(PollError.PollNotFound);
 
 
 
-        var questions = await _context.Questions.Where(q => q.PollId == pollId)
-            .Include(q=>q.Answers)
-            //.Select( q => new QuestionResponse (
-            //    q.Id  , q.Content , 
-
-            //     q.Answers.Select(
-                     
-            //         a => new AnswerResponse(a.Id , a.Content)
-                     
-            //         )
-            
-            //)
+        var query = _context.Questions
+            .Where(q => q.PollId == pollId && (string.IsNullOrEmpty(filter.SearchValue) 
+            || q.Content.Contains(filter.SearchValue)))
+            .OrderBy($"{filter.SortColumn} {filter.SortDirection}")
+            .Include(q => q.Answers)
             .ProjectToType<QuestionResponse>() // Using Mapster's ProjectToType for projection without using Select
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+            .AsNoTracking();
+            
 
+        var question = await PaginatedList<QuestionResponse>.CreateAsync(query,filter.PageNumber , filter.PageSize ,  cancellationToken);
 
-        return Result.Success<IEnumerable<QuestionResponse>>(questions);
+        return Result.Success(question);
 
     }
 
     public async Task<Result<QuestionResponse>> GetAsync(int pollId, int id, CancellationToken cancellationToken)
     {
-        var question = await _context.Questions.Where(q => q.PollId == pollId && q.Id == id)
+        var question = await _context.Questions
+                   .Where(q => q.PollId == pollId && q.Id == id)
                    .Include(q => q.Answers)       
                    .ProjectToType<QuestionResponse>() // Using Mapster's ProjectToType for projection without using Select
                    .AsNoTracking()
