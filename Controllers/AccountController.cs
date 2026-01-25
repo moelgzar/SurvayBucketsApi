@@ -1,8 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using SurvayBucketsApi.Abstractions;
+﻿using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Contracts.User;
 using SurvayBucketsApi.Extensions;
 
@@ -15,19 +11,19 @@ public class AccountController(IUserService userService) : ControllerBase
     private readonly IUserService _userService = userService;
 
     [HttpGet("")]
-    public async  Task<IActionResult> Info()
+    public async Task<IActionResult> Info()
     {
 
-        var user  = await _userService.GetProfile(User.GetUserId());
+        var user = await _userService.GetProfile(User.GetUserId());
         return Ok(user.Value);
 
     }
 
     [HttpPut("info")]
-    public async Task<IActionResult> Update( UpdateProfileRequest request)
+    public async Task<IActionResult> Update(UpdateProfileRequest request)
     {
 
-    await _userService.UpdateProfile(User.GetUserId() , request);
+        await _userService.UpdateProfile(User.GetUserId(), request);
 
         return NoContent();
     }
@@ -36,11 +32,11 @@ public class AccountController(IUserService userService) : ControllerBase
     public async Task<IActionResult> Change(ChangePasswordRequest request)
     {
 
-        var result = await _userService.ChangePassword(User.GetUserId() , request);
+        var result = await _userService.ChangePassword(User.GetUserId(), request);
 
         return result.IsSuccess ? NoContent() : result.ToProblem();
 
-       
+
     }
 
 

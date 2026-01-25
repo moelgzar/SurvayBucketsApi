@@ -5,5 +5,5 @@ namespace SurvayBucketsApi.services;
 
 public interface IVoteServices
 {
-    Task<Result> AddAsync(int pollId, string userid ,  VoteRequest request ,  CancellationToken cancellationToken = default);
+    Task<Result> AddAsync(int pollId, string userid, VoteRequest request, CancellationToken cancellationToken = default);
 }

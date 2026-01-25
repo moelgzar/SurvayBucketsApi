@@ -2,5 +2,5 @@
 
 public static class PolicyTypes
 {
-    public static string PolicyName { get; set; } = string.Empty; 
+    public static string PolicyName { get; set; } = string.Empty;
 }

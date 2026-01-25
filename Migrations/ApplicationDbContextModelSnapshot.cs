@@ -17,7 +17,7 @@ namespace SurvayBucketsApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.22")
+                .HasAnnotation("ProductVersion", "8.0.23")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -52,98 +52,98 @@ namespace SurvayBucketsApi.Migrations
                             Id = 1,
                             ClaimType = "permissions",
                             ClaimValue = "poll:read",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 2,
                             ClaimType = "permissions",
                             ClaimValue = "poll:add",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 3,
                             ClaimType = "permissions",
                             ClaimValue = "poll:update",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 4,
                             ClaimType = "permissions",
                             ClaimValue = "poll:delete",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 5,
                             ClaimType = "permissions",
                             ClaimValue = "question:read",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 6,
                             ClaimType = "permissions",
                             ClaimValue = "question:add",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 7,
                             ClaimType = "permissions",
                             ClaimValue = "question:update",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 8,
                             ClaimType = "permissions",
                             ClaimValue = "user:read",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 9,
                             ClaimType = "permissions",
                             ClaimValue = "user:add",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 10,
                             ClaimType = "permissions",
                             ClaimValue = "user:update",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 11,
                             ClaimType = "permissions",
                             ClaimValue = "role:read",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 12,
                             ClaimType = "permissions",
                             ClaimValue = "role:add",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 13,
                             ClaimType = "permissions",
                             ClaimValue = "role:update",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         },
                         new
                         {
                             Id = 14,
                             ClaimType = "permissions",
                             ClaimValue = "result:read",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         });
                 });
 
@@ -211,8 +211,8 @@ namespace SurvayBucketsApi.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "88f4a9e7-95df-4e45-8654-25155664279b",
-                            RoleId = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400"
+                            UserId = "019bf204-d0d9-71f0-bb5c-a29a7a7d1dab",
+                            RoleId = "019bf204-d0d9-7b88-b10d-7226cef7dbb3"
                         });
                 });
 
@@ -354,8 +354,8 @@ namespace SurvayBucketsApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e8c2fab5-2202-4ccb-81e6-460cb2ea9400",
-                            ConcurrencyStamp = "3fceb675-2f7c-4d44-9441-bafa982656d8",
+                            Id = "019bf204-d0d9-7b88-b10d-7226cef7dbb3",
+                            ConcurrencyStamp = "019bf204-d0d9-7fb6-a0d7-6c3872f6d28b",
                             IsDefault = false,
                             IsDeleted = false,
                             Name = "Admin",
@@ -363,8 +363,8 @@ namespace SurvayBucketsApi.Migrations
                         },
                         new
                         {
-                            Id = "f3e9f9a4-aaca-4766-b4a9-d568abc9c677",
-                            ConcurrencyStamp = "c0d6f5da-2bca-4918-b8a0-527bd95216f0",
+                            Id = "019bf204-d0d9-7518-9022-d59ad4c9f580",
+                            ConcurrencyStamp = "019bf204-d0d9-73bc-ae0b-aa3e4a671670",
                             IsDefault = true,
                             IsDeleted = false,
                             Name = "Member",
@@ -452,9 +452,9 @@ namespace SurvayBucketsApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "88f4a9e7-95df-4e45-8654-25155664279b",
+                            Id = "019bf204-d0d9-71f0-bb5c-a29a7a7d1dab",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4efe56a5-713c-4a9e-b2c4-f17efdb28081",
+                            ConcurrencyStamp = "019bf204-d0d9-7afb-9389-e14682c0f65b",
                             Email = "Admin@email.com",
                             EmailConfirmed = true,
                             FirstName = "Survey Basket",
@@ -463,7 +463,7 @@ namespace SurvayBucketsApi.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EMAIL.COM",
                             NormalizedUserName = "ADMIN@EMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDglRUxq8XrzSwgYxb0JDLkyITJ4PopH5bQgVDkmmNcm2zPXjs1DstIolHGAAq7nSQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDgKTA8H89DC7EgC0AHGiRLkR3WgwUlItT0fOORMW3X2Vd96PF95QMa50e/cYee35Q==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "efc11bfa1c1e4100a8e7ece811066671",
                             TwoFactorEnabled = false,

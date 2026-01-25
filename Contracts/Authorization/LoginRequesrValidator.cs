@@ -1,8 +1,6 @@
-﻿using System.Data;
+﻿namespace SurvayBucketsApi.Contracts.Authorization;
 
-namespace SurvayBucketsApi.Contracts.Authorization;
-
-public class LoginRequesrValidator:AbstractValidator<LoginRequestDto>
+public class LoginRequesrValidator : AbstractValidator<LoginRequestDto>
 {
 
 
@@ -17,7 +15,7 @@ public class LoginRequesrValidator:AbstractValidator<LoginRequestDto>
         RuleFor(x => x.Password)
             .NotEmpty()
 
-;       
+;
     }
 
 

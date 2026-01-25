@@ -1,7 +1,7 @@
 ﻿namespace SurvayBucketsApi.Contracts.Results;
 
 public record VotePerDayResponse(
-    DateOnly Date , 
+    DateOnly Date,
     int NumberOfVotes
     );
 

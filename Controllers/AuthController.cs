@@ -28,7 +28,7 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtop
 
     }
 
-    [HttpPut("RefreshToken")]
+    [HttpPut("refresh-token")]
     public async Task<IActionResult> GenerateRefreshTokenAsync(RefreshTokenRequest Request, CancellationToken cancellation)
     {
 
@@ -39,7 +39,7 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtop
         return autoresult.IsSuccess ? Ok(autoresult.Value) : NotFound(UserError.UserRefreshTokenNotFound);
 
     }
-    [HttpPut("RevokeToken")]
+    [HttpPut("revoke-token")]
     public async Task<IActionResult> RevokeRefreshTokenAsync(RevokeTokenRequest Request, CancellationToken cancellation)
     {
 
@@ -105,7 +105,7 @@ public class AuthController(IAuthService authService, IOptions<JwtOptions> Jwtop
 
     [HttpGet("test")]
     [EnableRateLimiting("sliding")]
-    public  IActionResult Test()
+    public IActionResult Test()
     {
         Thread.Sleep(6000);
 

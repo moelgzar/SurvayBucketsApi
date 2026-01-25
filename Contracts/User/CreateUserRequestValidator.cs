@@ -34,8 +34,8 @@ public class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
         RuleFor(x => x.Roles)
              .Must(x => x.Distinct().Count() == x.Count)
              .WithMessage("can not add dupplicae roles ")
-             .When(x=>x.Roles != null);
+             .When(x => x.Roles != null);
 
-            
+
     }
 }

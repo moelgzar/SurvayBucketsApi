@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SurvayBucketsApi.Abstractions;
-using SurvayBucketsApi.Contracts.Question;
+﻿using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Contracts.Results;
 using SurvayBucketsApi.Errors;
 
@@ -41,15 +39,15 @@ public class ResultService(ApplicationDbContext context) : IResultService
     {
 
 
-      var pollExsit = await _context.polls.AnyAsync(p => p.Id == pollId, cancellationToken);
+        var pollExsit = await _context.polls.AnyAsync(p => p.Id == pollId, cancellationToken);
         if (!pollExsit)
             return Result.Fail<IEnumerable<VotePerDayResponse>>(PollError.PollNotFound);
 
 
         var votesPerDay = await _context.Votes
-            .Where( x=>x.PollId == pollId)
-            .GroupBy(v=> new { Date = DateOnly.FromDateTime(v.SubmittedOn) })
-            .Select(g=> new VotePerDayResponse(
+            .Where(x => x.PollId == pollId)
+            .GroupBy(v => new { Date = DateOnly.FromDateTime(v.SubmittedOn) })
+            .Select(g => new VotePerDayResponse(
                  g.Key.Date,
                  g.Count()
                 )
@@ -69,14 +67,14 @@ public class ResultService(ApplicationDbContext context) : IResultService
             return Result.Fail<IEnumerable<VotesPerQuestionResponse>>(PollError.PollNotFound);
 
 
-       
+
         var votesPerQuestion = await _context.VoteAnswers
-            .Where(x=>x.Vote.PollId == pollId)
+            .Where(x => x.Vote.PollId == pollId)
             .Select(g => new VotesPerQuestionResponse(
-               
+
                 g.Question.Content,
-                g.Question.Votes.GroupBy( x => new { AnswerId = x.AnswerId , AnswerContent = x.Answer.Content })
-                .Select( ag => new VotePerAnswerResponse(
+                g.Question.Votes.GroupBy(x => new { AnswerId = x.AnswerId, AnswerContent = x.Answer.Content })
+                .Select(ag => new VotePerAnswerResponse(
                     ag.Key.AnswerContent,
                     ag.Count()
                  ))

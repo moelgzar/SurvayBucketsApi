@@ -3,8 +3,8 @@
 public record CreateUserRequest(
 
     string FirstName,
-    string LastName ,
+    string LastName,
     string Email,
-    string Password , 
+    string Password,
     IList<string> Roles
     );

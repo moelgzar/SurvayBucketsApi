@@ -1,6 +1,6 @@
 ﻿namespace SurvayBucketsApi.Contracts.Vote;
 
-public class VoteRequestValidator: AbstractValidator<VoteRequest>
+public class VoteRequestValidator : AbstractValidator<VoteRequest>
 {
 
     public VoteRequestValidator()
@@ -14,4 +14,3 @@ public class VoteRequestValidator: AbstractValidator<VoteRequest>
             });
     }
 }
- 

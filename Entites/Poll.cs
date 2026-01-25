@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using SurvayBucketsApi.Entites;
+﻿using SurvayBucketsApi.Entites;
 public class Poll : AuditableEntity
 {
-    public  int Id { get; set; }
+    public int Id { get; set; }
     public string Title { get; set; }
     public string Summray { get; set; }
     public bool IsPublished { get; set; }

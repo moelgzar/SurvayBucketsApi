@@ -12,10 +12,10 @@ public class ResultsController(IResultService resultService) : ControllerBase
     private readonly IResultService _resultService = resultService;
 
     [HttpGet("raw-data")]
-    public async Task<IActionResult> GetPollVotesAsync([FromRoute] int pollid , CancellationToken cancellationToken)
+    public async Task<IActionResult> GetPollVotesAsync([FromRoute] int pollid, CancellationToken cancellationToken)
     {
-     
-        var result =  await _resultService.ResultsAsync(pollid, cancellationToken);
+
+        var result = await _resultService.ResultsAsync(pollid, cancellationToken);
 
 
         return result.IsSuccess ? Ok(result.Value)
@@ -23,7 +23,7 @@ public class ResultsController(IResultService resultService) : ControllerBase
 
     }
     [HttpGet("votes-per-day")]
-    public  async Task<IActionResult> GetVotesPerDayAsync([FromRoute] int pollid , CancellationToken cancellationToken)
+    public async Task<IActionResult> GetVotesPerDayAsync([FromRoute] int pollid, CancellationToken cancellationToken)
     {
         var result = await _resultService.GetVotesPerDayAsync(pollid, cancellationToken);
         return result.IsSuccess ? Ok(result.Value)

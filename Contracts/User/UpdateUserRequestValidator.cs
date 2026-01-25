@@ -1,6 +1,4 @@
-﻿using SurvayBucketsApi.Abstractions.Const;
-
-namespace SurvayBucketsApi.Contracts.User;
+﻿namespace SurvayBucketsApi.Contracts.User;
 
 public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
 {
@@ -19,7 +17,7 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
             .NotEmpty()
             .EmailAddress();
 
-      
+
 
 
         RuleFor(x => x.Roles)

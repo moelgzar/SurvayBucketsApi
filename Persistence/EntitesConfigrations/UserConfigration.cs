@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Entites;
@@ -16,8 +15,8 @@ public class UserConfigration : IEntityTypeConfiguration<ApplicationUser>
             .ToTable("RefreshTokens")
             .WithOwner()
             .HasForeignKey("UserId");
-       
-        builder.Property(x=>x.FirstName).HasMaxLength(100);
+
+        builder.Property(x => x.FirstName).HasMaxLength(100);
         builder.Property(x => x.LastName).HasMaxLength(100);
 
         // add defaualt user (seeding )
@@ -30,11 +29,11 @@ public class UserConfigration : IEntityTypeConfiguration<ApplicationUser>
             Email = DefaultUser.AdminEmail,
             EmailConfirmed = true,
 
-            PasswordHash = passhasher.HashPassword(null!, DefaultUser.AdminPassword) , 
-            SecurityStamp = DefaultUser.SecurityStamp , 
-            ConcurrencyStamp = DefaultUser.ConcurrencyStamp ,
-            FirstName = "Survey Basket" , 
-            LastName = "Admin" , 
+            PasswordHash = DefaultUser.AdminPasswordHash,
+            SecurityStamp = DefaultUser.SecurityStamp,
+            ConcurrencyStamp = DefaultUser.ConcurrencyStamp,
+            FirstName = "Survey Basket",
+            LastName = "Admin",
             NormalizedEmail = DefaultUser.AdminEmail.ToUpper(),
             NormalizedUserName = DefaultUser.AdminEmail.ToUpper(),
             UserName = DefaultUser.AdminEmail,
@@ -42,6 +41,6 @@ public class UserConfigration : IEntityTypeConfiguration<ApplicationUser>
         }
 
             );
-       
+
     }
 }

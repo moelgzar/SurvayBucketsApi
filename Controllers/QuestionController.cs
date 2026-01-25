@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SurvayBucketsApi.Abstractions;
+﻿using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Authorization.Filter;
 using SurvayBucketsApi.Contracts.Common;
 using SurvayBucketsApi.Contracts.Question;
-using SurvayBucketsApi.Errors;
 
 namespace SurvayBucketsApi.Controllers;
 [Route("api/polls/{pollId}/[controller]")]
@@ -19,11 +15,11 @@ public class QuestionController(IQuestionServices questionServices) : Controller
 
     [HttpGet("")]
     [HasPermission(Permissions.GetQuestion)]
-    public async Task <IActionResult> GetAll([FromRoute] int pollId, [FromQuery] RequestFilter filter, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromRoute] int pollId, [FromQuery] RequestFilter filter, CancellationToken cancellationToken)
     {
-        var result =  await _questionServices.GetAllAsync(pollId, filter, cancellationToken);
+        var result = await _questionServices.GetAllAsync(pollId, filter, cancellationToken);
 
-        return result.IsSuccess ? Ok( result.Value) : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
 
@@ -31,9 +27,9 @@ public class QuestionController(IQuestionServices questionServices) : Controller
 
     [HttpGet("{id}")]
     [HasPermission(Permissions.GetQuestion)]
-    public async Task < IActionResult> Get([FromRoute] int pollId, [FromRoute] int id   , CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromRoute] int pollId, [FromRoute] int id, CancellationToken cancellationToken)
     {
-        var result = await _questionServices.GetAsync(pollId,id , cancellationToken);
+        var result = await _questionServices.GetAsync(pollId, id, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
@@ -43,11 +39,11 @@ public class QuestionController(IQuestionServices questionServices) : Controller
     [HttpPost("")]
     [HasPermission(Permissions.AddQuestion)]
 
-    public async Task<IActionResult> AddAsync( [FromRoute] int pollId, [FromBody] QuestionRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddAsync([FromRoute] int pollId, [FromBody] QuestionRequest request, CancellationToken cancellationToken)
     {
         var result = await _questionServices.AddAsync(pollId, request, cancellationToken);
 
-       
+
 
         return result.IsSuccess ? CreatedAtAction(nameof(Get), new { pollId, result.Value.id }, result.Value)
             : result.ToProblem();
@@ -60,7 +56,7 @@ public class QuestionController(IQuestionServices questionServices) : Controller
         var result = await _questionServices.ToggleStatus(pollId, id, cancellationToken);
         // This is a placeholder for the toggle status functionality.
         // Implement the actual logic in the service layer as needed.
-        return  result.IsSuccess ? NoContent() : result.ToProblem();
+        return result.IsSuccess ? NoContent() : result.ToProblem();
     }
 
     [HttpPut("{id}")]
@@ -69,7 +65,7 @@ public class QuestionController(IQuestionServices questionServices) : Controller
     public async Task<IActionResult> UpdateAsync([FromRoute] int pollId, [FromRoute] int id, [FromBody] QuestionRequest request, CancellationToken cancellationToken)
     {
         var result = await _questionServices.UpdateAsync(pollId, id, request, cancellationToken);
-       
+
         //return result.IsSuccess ? NoContent() 
         //    : result.Error!.Equals(QuestionError.QuestionDuplcated) ? result.ToProblem(StatusCodes.Status409Conflict)
         //    : result.ToProblem(StatusCodes.Status404NotFound);

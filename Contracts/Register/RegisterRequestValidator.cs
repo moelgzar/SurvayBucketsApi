@@ -7,8 +7,8 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequestShape>
 
     public RegisterRequestValidator()
     {
-        
-        RuleFor(x=>x.Email)
+
+        RuleFor(x => x.Email)
             .NotEmpty()
             .EmailAddress()
             .Length(3, 100);
@@ -21,9 +21,9 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequestShape>
 
 
 
-        RuleFor(x =>  x.FirstName)
+        RuleFor(x => x.FirstName)
             .NotEmpty()
-            .Length(3 , 50);
+            .Length(3, 50);
 
         RuleFor(x => x.LastName)
             .NotEmpty()

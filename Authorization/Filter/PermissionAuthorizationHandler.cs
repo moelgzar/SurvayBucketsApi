@@ -14,10 +14,10 @@ public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionReq
             return;
 
         var haspermission = context.User.Claims.Any(c => c.Value == requirement.Permission && c.Type == Permissions.Type);
-        if(!haspermission) 
+        if (!haspermission)
             return;
 
-         context.Succeed(requirement);
+        context.Succeed(requirement);
         return;
 
         //if (context.User.Identity is not { IsAuthenticated: true } ||
@@ -25,7 +25,7 @@ public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionReq
         //    return;
 
         context.Succeed(requirement);
-            return;
+        return;
 
     }
 }

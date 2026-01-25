@@ -9,10 +9,10 @@ public class JwtOptions
     [Required]
     public string Key { get; init; } = string.Empty;
     [Required]
-    public string Issuer  { get; init; } = string.Empty;
+    public string Issuer { get; init; } = string.Empty;
     [Required]
-    public string Audiance  { get; init; } = string.Empty;
-    [Range(1, int.MaxValue , ErrorMessage ="the value must be grater than 1 ") ]
+    public string Audiance { get; init; } = string.Empty;
+    [Range(1, int.MaxValue, ErrorMessage = "the value must be grater than 1 ")]
     public int ExpireDate { get; init; }
 
 

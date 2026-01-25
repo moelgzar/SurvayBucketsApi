@@ -6,11 +6,8 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using SurvayBucketsApi.Authorization;
 using SurvayBucketsApi.Authorization.Filter;
 using SurvayBucketsApi.Entites;
@@ -79,8 +76,8 @@ public static class DependancyInjection
         services.AddScoped<IQuestionServices, QuestionServices>();
         services.AddScoped<IVoteServices, VoteServices>();
         services.AddScoped<IResultService, ResultService>();
-        services.AddScoped<INotificationService , NotificationService>();
-        services.AddScoped<IUserService , UserService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRoleService, RoleService>();
         //services.AddScoped<EmailService>();
         services.AddScoped<IEmailSender, EmailService>();
@@ -103,7 +100,7 @@ public static class DependancyInjection
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen( options =>
+        services.AddSwaggerGen(options =>
         {
 
             //var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -150,7 +147,7 @@ public static class DependancyInjection
         services.AddIdentity<ApplicationUser, ApplicationRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-            
+
 
         services.AddHttpContextAccessor();
 
@@ -176,7 +173,11 @@ public static class DependancyInjection
 
 
 
-        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
+        services.AddOptions<MailSettings>()
+            .BindConfiguration(nameof(MailSettings))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
 
 
         var JwtSetting = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
@@ -234,7 +235,7 @@ public static class DependancyInjection
 
         return services;
     }
-    public static IServiceCollection AddBackgroundJobsServices(this IServiceCollection services , IConfiguration configuration)
+    public static IServiceCollection AddBackgroundJobsServices(this IServiceCollection services, IConfiguration configuration)
     {
 
         services.AddHangfire(config => config

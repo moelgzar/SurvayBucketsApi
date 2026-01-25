@@ -1,6 +1,6 @@
 ﻿namespace SurvayBucketsApi.Contracts.User;
 
-public class UpdateProfileResponseValidator :AbstractValidator<UpdateProfileRequest>
+public class UpdateProfileResponseValidator : AbstractValidator<UpdateProfileRequest>
 {
 
     public UpdateProfileResponseValidator()
@@ -13,7 +13,7 @@ public class UpdateProfileResponseValidator :AbstractValidator<UpdateProfileRequ
 
 
 }
-    
-   
+
+
 
 

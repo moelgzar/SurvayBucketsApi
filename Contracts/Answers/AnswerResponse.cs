@@ -1,8 +1,8 @@
 ﻿namespace SurvayBucketsApi.Contracts.Answers;
 
 public record AnswerResponse(
-    
-    int id , 
+
+    int id,
     string Content
 
     );

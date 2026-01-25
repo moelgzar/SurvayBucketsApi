@@ -8,7 +8,7 @@ public record RequestFilter
     public string? SearchValue { get; init; }
     public string? SortColumn { get; init; }
     public string? SortDirection { get; init; } = "ASC";
-    
+
 
 }
 

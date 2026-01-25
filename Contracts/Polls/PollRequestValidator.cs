@@ -9,9 +9,9 @@ public class PollRequestValidator : AbstractValidator<PollRequest>
             .NotEmpty()
             .Length(1, 200);
 
-        RuleFor(s=>s.Summray)
+        RuleFor(s => s.Summray)
             .NotEmpty()
-            .Length (1, 1500);
+            .Length(1, 1500);
 
         RuleFor(s => s.StartsAt)
             .NotEmpty()
@@ -23,7 +23,7 @@ public class PollRequestValidator : AbstractValidator<PollRequest>
             .Must(HasValidDate)
             .WithName(nameof(PollRequest.EndsAt))
             .WithMessage("the End date ({PropertyName}) must greater than start date. ");
-            
+
 
     }
 

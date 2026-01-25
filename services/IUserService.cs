@@ -6,7 +6,7 @@ namespace SurvayBucketsApi.services;
 public interface IUserService
 {
     Task<Result<UserProfileResponse>> GetProfile(string userid);
-    Task<Result> UpdateProfile(string userid , UpdateProfileRequest request );
+    Task<Result> UpdateProfile(string userid, UpdateProfileRequest request);
     Task<Result> ChangePassword(string userid, ChangePasswordRequest request);
     Task<IEnumerable<UserResponse>> GetAllUser(CancellationToken cancellationToken = default);
     Task<Result<UserResponse>> Getbyid(string id);

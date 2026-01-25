@@ -11,7 +11,7 @@ public class RoleClaimsConfigration : IEntityTypeConfiguration<IdentityRoleClaim
 
         var permissions = Permissions.GetAllPermissions();
 
-        var Adminclaims = new List <IdentityRoleClaim<string>>();
+        var Adminclaims = new List<IdentityRoleClaim<string>>();
 
         for (int i = 0; i < permissions.Count; i++)
         {
@@ -30,6 +30,6 @@ public class RoleClaimsConfigration : IEntityTypeConfiguration<IdentityRoleClaim
         }
 
         builder.HasData(Adminclaims);
-       
+
     }
 }

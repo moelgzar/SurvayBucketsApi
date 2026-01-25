@@ -5,7 +5,7 @@ using SurvayBucketsApi.Errors;
 
 namespace SurvayBucketsApi.services;
 
-public class Pollservice(ApplicationDbContext context , INotificationService notificationService) : IPollservice
+public class Pollservice(ApplicationDbContext context, INotificationService notificationService) : IPollservice
 
 {
     private readonly ApplicationDbContext _context = context;
@@ -19,7 +19,7 @@ public class Pollservice(ApplicationDbContext context , INotificationService not
     public async Task<IEnumerable<PollResponse>> GetCurrentAsync(CancellationToken cancellation = default)
     {
         return await _context.polls.
-            Where(x=>x.IsPublished && x.StartsAt <= DateOnly.FromDateTime(DateTime.UtcNow) 
+            Where(x => x.IsPublished && x.StartsAt <= DateOnly.FromDateTime(DateTime.UtcNow)
                  && x.EndsAt >= DateOnly.FromDateTime(DateTime.UtcNow))
                 .AsNoTracking()
                 .ProjectToType<PollResponse>().ToListAsync(cancellation);
@@ -41,7 +41,7 @@ public class Pollservice(ApplicationDbContext context , INotificationService not
         if (IsExisiting)
             return Result.Fail<PollResponse>(PollError.PollDuplcated);
 
-        var result =  await _context.polls.AddAsync(request.Adapt<Poll>(), cancellation);
+        var result = await _context.polls.AddAsync(request.Adapt<Poll>(), cancellation);
         await _context.SaveChangesAsync(cancellation);
 
         if (result is null)
@@ -62,14 +62,10 @@ public class Pollservice(ApplicationDbContext context , INotificationService not
 
         var currentpoll = await _context.polls.FindAsync(id, cancellation);
         if (currentpoll is null)
-            return Result.Fail(PollError.PollNotFound) ;
+            return Result.Fail(PollError.PollNotFound);
 
 
-        currentpoll.Title = request.Title;
-        currentpoll.Summray = request.Summray;
-        currentpoll.StartsAt = request.StartsAt;
-        currentpoll.EndsAt = request.EndsAt;
-        currentpoll.IsPublished = request.IsPublished;
+        currentpoll = request.Adapt(currentpoll);
 
         await _context.SaveChangesAsync(cancellation);
 
@@ -100,7 +96,7 @@ public class Pollservice(ApplicationDbContext context , INotificationService not
 
     public async Task<Result> togglePublishStatus(int id, CancellationToken cancellation)
     {
-        var poll = await _context.polls.FirstOrDefaultAsync(x=>x.Id == id);
+        var poll = await _context.polls.FirstOrDefaultAsync(x => x.Id == id);
         if (poll is null)
             return Result.Fail(PollError.PollNotFound);
 
@@ -108,9 +104,9 @@ public class Pollservice(ApplicationDbContext context , INotificationService not
 
         if (poll.IsPublished && poll.StartsAt == DateOnly.FromDateTime(DateTime.UtcNow))
 
-            BackgroundJob.Enqueue( () => _notificationService.SendNewPollsNotifications(poll.Id));
+            BackgroundJob.Enqueue(() => _notificationService.SendNewPollsNotifications(poll.Id));
         return Result.Success();
     }
 
-    
+
 }

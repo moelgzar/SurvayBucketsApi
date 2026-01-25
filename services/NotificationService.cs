@@ -1,15 +1,14 @@
-﻿
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Entites;
 using SurvayBucketsApi.Helpers;
 
 namespace SurvayBucketsApi.services;
 
-public class NotificationService(ApplicationDbContext context ,
-    UserManager<ApplicationUser> userManager ,
-    IHttpContextAccessor httpContextAccessor , IEmailSender emailSender
+public class NotificationService(ApplicationDbContext context,
+    UserManager<ApplicationUser> userManager,
+    IHttpContextAccessor httpContextAccessor, IEmailSender emailSender
     ) : INotificationService
 {
     private readonly ApplicationDbContext _context = context;
@@ -31,20 +30,23 @@ public class NotificationService(ApplicationDbContext context ,
         else
         {
 
-             polls = await _context.polls.
-                       Where(x => x.IsPublished && x.StartsAt == DateOnly.FromDateTime(DateTime.UtcNow))
-                       .AsNoTracking()
-                       .ToListAsync();
-                       
+            polls = await _context.polls.
+                      Where(x => x.IsPublished && x.StartsAt == DateOnly.FromDateTime(DateTime.UtcNow))
+                      .AsNoTracking()
+                      .ToListAsync();
+
         }
 
         //TODO select members only  
 
-        var users = await _userManager.Users.ToListAsync();
+
+
+        var users = await _userManager.GetUsersInRoleAsync(DefaultRole.Member);
         var orign = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
 
 
-        foreach (var pol in polls) {
+        foreach (var pol in polls)
+        {
 
             foreach (var user in users)
             {
@@ -57,7 +59,7 @@ public class NotificationService(ApplicationDbContext context ,
                };
 
                 var emailbody = EmailBodyBuilder.GenerateEmailBody("PollNotification", placholders);
-                 await _emailSender.SendEmailAsync(user.Email! , $"New Poll {pol.Title}" , emailbody);
+                await _emailSender.SendEmailAsync(user.Email!, $"New Poll {pol.Title}", emailbody);
 
 
             }

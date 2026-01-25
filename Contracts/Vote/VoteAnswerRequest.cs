@@ -1,6 +1,4 @@
-﻿using SurvayBucketsApi.Entites;
-
-namespace SurvayBucketsApi.Contracts.Vote;
+﻿namespace SurvayBucketsApi.Contracts.Vote;
 
 public record VoteAnswerRequest(
 

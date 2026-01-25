@@ -15,7 +15,7 @@ public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequ
             .Matches(RegexPattern.PasswordPattern)
             .WithMessage("not matched password");
 
-        RuleFor(x=>x.Code)
+        RuleFor(x => x.Code)
             .NotEmpty();
     }
 }

@@ -1,14 +1,12 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace SurvayBucketsApi.Abstractions.Const;
+﻿namespace SurvayBucketsApi.Abstractions.Const;
 
 public static class Permissions
 {
     public static string Type { get; } = "permissions";
 
-    public const string GetPoll = "poll:read"; 
-    public const string AddPoll = "poll:add"; 
-    public const string UpdatePoll = "poll:update"; 
+    public const string GetPoll = "poll:read";
+    public const string AddPoll = "poll:add";
+    public const string UpdatePoll = "poll:update";
     public const string DeletePoll = "poll:delete";
 
 
@@ -30,9 +28,9 @@ public static class Permissions
     public const string Results = "result:read";
 
 
-    public static IList<string?> GetAllPermissions() => 
-        
-        typeof(Permissions).GetFields().Select(f => f.GetValue(f) as string ).ToList();
+    public static IList<string?> GetAllPermissions() =>
+
+        typeof(Permissions).GetFields().Select(f => f.GetValue(f) as string).ToList();
 
 
 

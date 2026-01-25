@@ -1,11 +1,9 @@
-﻿using Microsoft.Identity.Client;
+﻿namespace SurvayBucketsApi.Contracts.Roles;
 
-namespace SurvayBucketsApi.Contracts.Roles;
+public record RoleRequest(
 
-public record RoleRequest (
-    
-    string Name ,
+    string Name,
     IList<string> Permissions
-    
+
     );
 

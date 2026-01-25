@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using System.Linq.Dynamic.Core;
 using Microsoft.Extensions.Caching.Hybrid;
-using System.Linq.Dynamic.Core;
 using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Contracts.Answers;
 using SurvayBucketsApi.Contracts.Common;
@@ -10,7 +9,7 @@ using SurvayBucketsApi.Errors;
 
 namespace SurvayBucketsApi.services;
 
-public class QuestionServices(ApplicationDbContext context , HybridCache hybridCache , ILogger<QuestionServices> logger) : IQuestionServices
+public class QuestionServices(ApplicationDbContext context, HybridCache hybridCache, ILogger<QuestionServices> logger) : IQuestionServices
 {
     private readonly ApplicationDbContext _context = context;
     private readonly HybridCache _hybridCache = hybridCache;
@@ -20,19 +19,19 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
     private const string _cachePrefix = "available_questions_";
     public async Task<Result<QuestionResponse>> AddAsync(int pollId, QuestionRequest request, CancellationToken cancellationToken)
     {
-        
-        var pollIsExist =   _context.polls.Any(p => p.Id == pollId);
+
+        var pollIsExist = _context.polls.Any(p => p.Id == pollId);
         if (!pollIsExist)
             return Result.Fail<QuestionResponse>(PollError.PollNotFound);
 
         var questionExsists = _context.Questions.Any(q => q.Content == request.Content && q.PollId == pollId);
-        
+
         if (questionExsists)
             return Result.Fail<QuestionResponse>(PollError.PollDuplcated);
 
 
         var question = request.Adapt<Question>();
-      
+
 
         question.PollId = pollId;
 
@@ -47,10 +46,10 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
 
     }
 
-    public async Task<Result<PaginatedList<QuestionResponse>>> GetAllAsync(int pollId, RequestFilter filter ,  CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<QuestionResponse>>> GetAllAsync(int pollId, RequestFilter filter, CancellationToken cancellationToken)
     {
-      
-      var   PollIsExist =  await _context.polls.AnyAsync(p => p.Id == pollId, cancellationToken);
+
+        var PollIsExist = await _context.polls.AnyAsync(p => p.Id == pollId, cancellationToken);
 
         if (!PollIsExist)
             return Result.Fail<PaginatedList<QuestionResponse>>(PollError.PollNotFound);
@@ -58,15 +57,15 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
 
 
         var query = _context.Questions
-            .Where(q => q.PollId == pollId && (string.IsNullOrEmpty(filter.SearchValue) 
+            .Where(q => q.PollId == pollId && (string.IsNullOrEmpty(filter.SearchValue)
             || q.Content.Contains(filter.SearchValue)))
             .OrderBy($"{filter.SortColumn} {filter.SortDirection}")
             .Include(q => q.Answers)
             .ProjectToType<QuestionResponse>() // Using Mapster's ProjectToType for projection without using Select
             .AsNoTracking();
-            
 
-        var question = await PaginatedList<QuestionResponse>.CreateAsync(query,filter.PageNumber , filter.PageSize ,  cancellationToken);
+
+        var question = await PaginatedList<QuestionResponse>.CreateAsync(query, filter.PageNumber, filter.PageSize, cancellationToken);
 
         return Result.Success(question);
 
@@ -76,12 +75,12 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
     {
         var question = await _context.Questions
                    .Where(q => q.PollId == pollId && q.Id == id)
-                   .Include(q => q.Answers)       
+                   .Include(q => q.Answers)
                    .ProjectToType<QuestionResponse>() // Using Mapster's ProjectToType for projection without using Select
                    .AsNoTracking()
                    .SingleOrDefaultAsync(cancellationToken);
 
-        if(question is null )
+        if (question is null)
             return Result.Fail<QuestionResponse>(PollError.PollNotFound);
 
         return Result.Success(question);
@@ -118,7 +117,7 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
                    ))
                    .AsNoTracking()
                    .ToListAsync(cancellationToken)
-            
+
 
         );
 
@@ -128,11 +127,11 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
         return Result.Success<IEnumerable<QuestionResponse>>(questions);
 
     }
-    public async Task<Result> ToggleStatus([FromRoute] int pollid, [FromRoute] int id ,  CancellationToken cancellation)
+    public async Task<Result> ToggleStatus([FromRoute] int pollid, [FromRoute] int id, CancellationToken cancellation)
     {
-        
-        var question = _context.Questions.FirstOrDefault(q=>q.PollId == pollid && q.Id == id);
-        if( question is null)
+
+        var question = _context.Questions.FirstOrDefault(q => q.PollId == pollid && q.Id == id);
+        if (question is null)
             return Result.Fail(PollError.PollNotFound);
         question.IsActive = !question.IsActive;
         await _context.SaveChangesAsync(cancellation);
@@ -142,14 +141,14 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
 
     public async Task<Result> UpdateAsync(int pollId, int id, QuestionRequest request, CancellationToken cancellationToken)
     {
-        
-        var IsExsitquestion = await _context.Questions.AnyAsync(x=>x.PollId == pollId && x.Id != id && x.Content == request.Content , cancellationToken);
+
+        var IsExsitquestion = await _context.Questions.AnyAsync(x => x.PollId == pollId && x.Id != id && x.Content == request.Content, cancellationToken);
         if (IsExsitquestion)
             return Result.Fail<QuestionRequest>(QuestionError.QuestionDuplcated);
 
         var question = await _context.
-            Questions.Include(x=>x.Answers)
-            .FirstOrDefaultAsync(x=>x.PollId == pollId && x.Id == id ,cancellationToken);
+            Questions.Include(x => x.Answers)
+            .FirstOrDefaultAsync(x => x.PollId == pollId && x.Id == id, cancellationToken);
 
         if (question is null)
             return Result.Fail<QuestionRequest>(QuestionError.QuestionNotFound);
@@ -157,18 +156,18 @@ public class QuestionServices(ApplicationDbContext context , HybridCache hybridC
         //update answers
 
         // current answers in db
-        var currentAnswers = question.Answers.Select(x=>x.Content).ToList();
+        var currentAnswers = question.Answers.Select(x => x.Content).ToList();
         // new answers from request
         var newAnswers = request.Answers.Except(currentAnswers).ToList();
-        
-        
-        newAnswers.ForEach( async answerContent => 
+
+
+        newAnswers.ForEach(async answerContent =>
         {
-       
+
             question.Answers.Add(new Answer
             {
                 Content = answerContent
-               
+
             });
 
         });

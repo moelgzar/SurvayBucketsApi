@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SurvayBucketsApi.Abstractions;
-using SurvayBucketsApi.Contracts.Question;
+﻿using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Contracts.Vote;
 using SurvayBucketsApi.Entites;
 using SurvayBucketsApi.Errors;
@@ -11,7 +9,7 @@ public class VoteServices(ApplicationDbContext context) : IVoteServices
 {
     private readonly ApplicationDbContext _context = context;
 
-    public async Task<Result> AddAsync(int pollId, string userid ,  VoteRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> AddAsync(int pollId, string userid, VoteRequest request, CancellationToken cancellationToken = default)
     {
         var HasVote = await _context.Votes.AnyAsync(v => v.PollId == pollId && v.UserId == userid, cancellationToken);
         if (HasVote)
@@ -23,7 +21,7 @@ public class VoteServices(ApplicationDbContext context) : IVoteServices
 
         if (!PollExsit)
             return Result.Fail(PollError.PollNotFound);
-        var avalibalidAnswers = await _context.Questions.Where(q=>q.PollId == pollId && q.IsActive)
+        var avalibalidAnswers = await _context.Questions.Where(q => q.PollId == pollId && q.IsActive)
             .Select(q => q.Id)
             .ToListAsync(cancellationToken);
 
@@ -36,7 +34,7 @@ public class VoteServices(ApplicationDbContext context) : IVoteServices
             UserId = userid,
             VoteAnswers = request.Answers.Adapt<IEnumerable<VoteAnswer>>().ToList(),
 
-      };
+        };
         await _context.AddAsync(vote, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 

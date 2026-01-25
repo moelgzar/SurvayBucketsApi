@@ -8,13 +8,13 @@ using SurvayBucketsApi.Entites;
 
 namespace SurvayBucketsApi.Authorization;
 
-public class JwtProvider(IOptions<JwtOptions> options ) : IJwtProvider
+public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
 {
     private readonly IOptions<JwtOptions> _options = options;
 
 
 
-    public (string token, int ExperiesIn) GeneratedToken(ApplicationUser user , IEnumerable<string> roles , IEnumerable<string> permissions) 
+    public (string token, int ExperiesIn) GeneratedToken(ApplicationUser user, IEnumerable<string> roles, IEnumerable<string> permissions)
     {
         Claim[] claims = [
 
@@ -32,8 +32,8 @@ public class JwtProvider(IOptions<JwtOptions> options ) : IJwtProvider
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Value.Key));
 
-        
-        var signingCredientials = new SigningCredentials(symmetricSecurityKey , SecurityAlgorithms.HmacSha256);
+
+        var signingCredientials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
         //int expiresIn = 30;
 
@@ -47,7 +47,7 @@ public class JwtProvider(IOptions<JwtOptions> options ) : IJwtProvider
 
             );
 
-        return (token: new JwtSecurityTokenHandler().WriteToken(token), ExperiesIn: _options.Value.ExpireDate * 60 );
+        return (token: new JwtSecurityTokenHandler().WriteToken(token), ExperiesIn: _options.Value.ExpireDate * 60);
     }
 
     public string ValidateToken(string token)
@@ -70,9 +70,9 @@ public class JwtProvider(IOptions<JwtOptions> options ) : IJwtProvider
             }, out SecurityToken validatedToken);
 
 
-            var jwttoken = (JwtSecurityToken) validatedToken;
+            var jwttoken = (JwtSecurityToken)validatedToken;
 
-       return jwttoken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+            return jwttoken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
 
         }
         catch

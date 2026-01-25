@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SurvayBucketsApi.Abstractions;
+﻿using SurvayBucketsApi.Abstractions;
 using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Authorization.Filter;
 using SurvayBucketsApi.Contracts.User;
@@ -21,29 +19,29 @@ public class UserController(IUserService userService) : ControllerBase
     }
     [HttpGet("{id}")]
     [HasPermission(Permissions.GetUser)]
-    public async Task<IActionResult> Get( [FromRoute] string id)
+    public async Task<IActionResult> Get([FromRoute] string id)
     {
-        var result  = await _userService.Getbyid(id);
+        var result = await _userService.Getbyid(id);
 
-        return result.IsSuccess ?   Ok(result.Value) : result.ToProblem();
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
 
 
     [HttpPost("")]
     [HasPermission(Permissions.AddUser)]
-    public async Task<IActionResult> Add([FromBody] CreateUserRequest request , CancellationToken cancellationToken)
+    public async Task<IActionResult> Add([FromBody] CreateUserRequest request, CancellationToken cancellationToken)
     {
-        var result = await _userService.CreateUserAsync(request , cancellationToken);
+        var result = await _userService.CreateUserAsync(request, cancellationToken);
 
-        return result.IsSuccess ? CreatedAtAction( nameof(Get) ,  new { result.Value.Id } , result.Value  ): result.ToProblem();
+        return result.IsSuccess ? CreatedAtAction(nameof(Get), new { result.Value.Id }, result.Value) : result.ToProblem();
     }
 
 
     [HttpPut("{id}")]
     [HasPermission(Permissions.UpdateUser)]
-    public async Task<IActionResult> UpdateAsync([FromRoute] string id  , [FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UpdateUserRequest request, CancellationToken cancellationToken)
     {
-        var result = await _userService.UpdateUserAsync(id , request, cancellationToken);
+        var result = await _userService.UpdateUserAsync(id, request, cancellationToken);
 
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }

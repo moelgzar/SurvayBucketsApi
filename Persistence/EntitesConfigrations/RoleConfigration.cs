@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SurvayBucketsApi.Abstractions.Const;
 using SurvayBucketsApi.Entites;
 
@@ -33,9 +31,9 @@ public class RoleConfigration : IEntityTypeConfiguration<ApplicationRole>
                 IsDefault = true
             }
             ]);
-       
 
-           
-       
+
+
+
     }
 }

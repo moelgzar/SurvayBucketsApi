@@ -1,6 +1,6 @@
 ﻿namespace SurvayBucketsApi.Contracts.Answers;
 
-public record AnsweRequest(    
+public record AnsweRequest(
     string text
     );
 

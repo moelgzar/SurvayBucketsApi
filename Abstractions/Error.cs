@@ -1,7 +1,7 @@
 ﻿namespace SurvayBucketsApi.Abstractions;
 public record Error(
-    string code , string description , int? statusCode
+    string code, string description, int? statusCode
     )
 {
-    public static readonly Error None = new (string.Empty, string.Empty , null);
+    public static readonly Error None = new(string.Empty, string.Empty, null);
 }

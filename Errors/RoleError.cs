@@ -2,9 +2,9 @@
 
 namespace SurvayBucketsApi.Errors;
 
-public static class  RoleError
+public static class RoleError
 {
-    public static readonly  Error RoleNotFound = new("Role.invalid", "Role not found " , StatusCodes.Status404NotFound);
+    public static readonly Error RoleNotFound = new("Role.invalid", "Role not found ", StatusCodes.Status404NotFound);
     //public static readonly  Error UserID = new("UserID.invalid", "  user ID incorrect ", StatusCodes.Status401Unauthorized);
     //public static readonly Error UserRefreshTokenNotFound = new("UserRefreshTokenNotFound.invalid", "UserRefreshTokenNotFound error ", StatusCodes.Status401Unauthorized);
     //public static readonly Error UserEmailExits = new("UserEmail already exists by a nother one  ", " Enter another Email  ", StatusCodes.Status409Conflict);

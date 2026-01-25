@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 namespace SurvayBucketsApi.Authorization.Filter;
 
-public class PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options) 
+public class PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
     : DefaultAuthorizationPolicyProvider(options)
 {
     private readonly AuthorizationOptions _options = options.Value;
