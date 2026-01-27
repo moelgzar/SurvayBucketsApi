@@ -42,4 +42,11 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.1" />
   </ItemGroup>
 
+
+	<ItemGroup>
+		<Content Include= "Templetes/**">
+			
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 </Project>
